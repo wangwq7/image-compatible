@@ -45,6 +45,7 @@ import (
 const (
 	abiVersion              uint32 = 1
 	schemaVersion           uint32 = 1
+	pluginVersion                  = "0.2.0"
 	methodPluginRegister           = "plugin.register"
 	methodPluginReconfigure        = "plugin.reconfigure"
 	methodRequestNormalize         = "request.normalize"
@@ -52,9 +53,9 @@ const (
 
 var runtimeConfig = struct {
 	sync.RWMutex
-	value guardConfig
+	value compatibilityConfig
 }{
-	value: defaultGuardConfig(),
+	value: defaultCompatibilityConfig(),
 }
 
 type envelope struct {
@@ -173,7 +174,7 @@ func handleMethod(method string, request []byte) ([]byte, error) {
 }
 
 func configure(raw []byte) error {
-	cfg := defaultGuardConfig()
+	cfg := defaultCompatibilityConfig()
 	if len(raw) > 0 {
 		var req lifecycleRequest
 		if err := json.Unmarshal(raw, &req); err != nil {
@@ -194,7 +195,7 @@ func configure(raw []byte) error {
 	return nil
 }
 
-func currentConfig() guardConfig {
+func currentConfig() compatibilityConfig {
 	runtimeConfig.RLock()
 	defer runtimeConfig.RUnlock()
 	return runtimeConfig.value.clone()
@@ -220,7 +221,7 @@ func pluginRegistration() registration {
 		SchemaVersion: schemaVersion,
 		Metadata: pluginMetadata{
 			Name:             "image-compatible",
-			Version:          "0.1.0",
+			Version:          pluginVersion,
 			Author:           "wangwq7",
 			GitHubRepository: "https://github.com/wangwq7/image-compatible",
 			Logo:             "",
@@ -228,16 +229,6 @@ func pluginRegistration() registration {
 				{Name: "models", Type: "array", Description: "Models protected by the image compatibility normalizer."},
 				{Name: "source_formats", Type: "array", Description: "Client formats eligible for normalization."},
 				{Name: "target_formats", Type: "array", Description: "Upstream formats eligible for normalization."},
-				{Name: "tool_name_patterns", Type: "array", Description: "Case-insensitive tool-name substrings eligible for old screenshot trimming."},
-				{Name: "repair_stringified_images", Type: "boolean", Description: "Converts stringified tool image arrays into structured Codex image parts."},
-				{Name: "trim_old_tool_images", Type: "boolean", Description: "Replaces the oldest tool screenshots when configured limits are exceeded."},
-				{Name: "context_window_tokens", Type: "integer", Description: "Configured model context window used by the conservative estimator."},
-				{Name: "reserve_tokens", Type: "integer", Description: "Tokens reserved for model output and estimation error."},
-				{Name: "max_base64_bytes", Type: "integer", Description: "Maximum decoded base64 bytes retained across images before trimming old tool screenshots."},
-				{Name: "estimated_tokens_per_image", Type: "integer", Description: "Conservative token estimate assigned to each structured image."},
-				{Name: "bytes_per_text_token", Type: "number", Description: "Conservative UTF-8 byte-to-token ratio for non-image request content."},
-				{Name: "keep_recent_tool_images", Type: "integer", Description: "Minimum number of most recent tool screenshots that are never trimmed."},
-				{Name: "placeholder", Type: "string", Description: "Text inserted where an old tool screenshot was removed."},
 			},
 		},
 		Capabilities: registrationCapability{RequestNormalizer: true},

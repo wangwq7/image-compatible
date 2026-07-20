@@ -9,7 +9,7 @@ else
 NATIVE_EXT := so
 endif
 
-.PHONY: test build smoke linux-amd64 clean
+.PHONY: test build smoke strict linux-amd64 clean
 
 test:
 	go test ./...
@@ -21,6 +21,9 @@ build: test
 
 smoke: build
 	python3 scripts/abi_smoke_test.py $(DIST_DIR)/$(PLUGIN_ID).$(NATIVE_EXT)
+
+strict: build
+	python3 scripts/abi_strict_test.py $(DIST_DIR)/$(PLUGIN_ID).$(NATIVE_EXT)
 
 linux-amd64:
 	mkdir -p $(DIST_DIR)

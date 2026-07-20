@@ -65,10 +65,7 @@ def main():
     ):
         raise RuntimeError(f"invalid plugin API: {api.abi_version}")
 
-    config = (
-        b"repair_stringified_images: true\n"
-        b"trim_old_tool_images: false\n"
-    )
+    config = b"models:\n  - gpt-5.6-sol\n"
     registration = invoke(
         lib,
         "plugin.register",
@@ -82,6 +79,9 @@ def main():
         raise RuntimeError(f"invalid host metadata: {metadata}")
     if not registration["capabilities"]["request_normalizer"]:
         raise RuntimeError("request_normalizer capability missing")
+    field_names = [field["Name"] for field in metadata["ConfigFields"]]
+    if field_names != ["models", "source_formats", "target_formats"]:
+        raise RuntimeError(f"unexpected config fields: {field_names}")
 
     stringified = json.dumps(
         [
