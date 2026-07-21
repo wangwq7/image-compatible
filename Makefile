@@ -1,4 +1,4 @@
-PLUGIN_ID := image-compatible
+PLUGIN_ID := codex-tool-output-normalizer
 DIST_DIR := $(CURDIR)/dist
 GO_IMAGE ?= golang:1.26-bookworm
 

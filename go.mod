@@ -1,4 +1,4 @@
-module image-compatible
+module codex-tool-output-normalizer
 
 go 1.24
 

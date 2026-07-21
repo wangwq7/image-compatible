@@ -45,7 +45,7 @@ import (
 const (
 	abiVersion              uint32 = 1
 	schemaVersion           uint32 = 1
-	pluginVersion                  = "0.2.1"
+	pluginVersion                  = "0.3.0"
 	methodPluginRegister           = "plugin.register"
 	methodPluginReconfigure        = "plugin.reconfigure"
 	methodRequestNormalize         = "request.normalize"
@@ -220,13 +220,13 @@ func pluginRegistration() registration {
 	return registration{
 		SchemaVersion: schemaVersion,
 		Metadata: pluginMetadata{
-			Name:             "image-compatible",
+			Name:             "codex-tool-output-normalizer",
 			Version:          pluginVersion,
 			Author:           "wangwq7",
-			GitHubRepository: "https://github.com/wangwq7/image-compatible",
+			GitHubRepository: "https://github.com/wangwq7/codex-tool-output-normalizer",
 			Logo:             "",
 			ConfigFields: []configField{
-				{Name: "models", Type: "array", Description: "Models protected by the image compatibility normalizer."},
+				{Name: "models", Type: "array", Description: "Models protected by the Codex tool-output normalizer."},
 				{Name: "source_formats", Type: "array", Description: "Client formats eligible for normalization."},
 				{Name: "target_formats", Type: "array", Description: "Upstream formats eligible for normalization."},
 			},

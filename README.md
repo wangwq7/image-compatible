@@ -1,6 +1,6 @@
-# image-compatible
+# codex-tool-output-normalizer
 
-`image-compatible` is a CLIProxyAPI request-normalizer plugin for the
+`codex-tool-output-normalizer` is a CLIProxyAPI request-normalizer plugin for the
 OpenAI Chat Completions to Codex Responses conversion path.
 
 It performs one operation: when CPA has converted a Chat Completions tool
@@ -39,14 +39,14 @@ an image appears alongside it.
 ## CPA configuration
 
 Place the Linux artifact at the configured plugin directory as
-`image-compatible.so`. The basename must match the config key.
+`codex-tool-output-normalizer.so`. The basename must match the config key.
 
 ```yaml
 plugins:
   enabled: true
   dir: /path/to/plugins
   configs:
-    image-compatible:
+    codex-tool-output-normalizer:
       enabled: true
       priority: 10
       models:
@@ -59,7 +59,7 @@ plugins:
 ```
 
 CPA owns the `enabled` field. Its management page and
-`PATCH /v0/management/plugins/image-compatible/enabled` endpoint can disable
+`PATCH /v0/management/plugins/codex-tool-output-normalizer/enabled` endpoint can disable
 or re-enable the plugin at runtime without changing the global plugin switch.
 
 The default scope is deliberately narrow:

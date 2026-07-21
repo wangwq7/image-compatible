@@ -73,7 +73,7 @@ def main():
     )
     metadata = registration["metadata"]
     required_metadata = ("Name", "Version", "Author", "GitHubRepository")
-    if metadata["Name"] != "image-compatible" or any(
+    if metadata["Name"] != "codex-tool-output-normalizer" or any(
         not str(metadata.get(field, "")).strip() for field in required_metadata
     ):
         raise RuntimeError(f"invalid host metadata: {metadata}")
