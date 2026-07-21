@@ -116,7 +116,9 @@ func containsRecognizedImage(parts []any) bool {
 func normalizeToolOutputPart(rawPart any) any {
 	part, ok := rawPart.(map[string]any)
 	if !ok {
-		return fallbackTextPart(rawPart)
+		// This normalizer repairs only image compatibility. Preserve every
+		// unrecognized value exactly instead of coercing it into text.
+		return rawPart
 	}
 	if image, recognized := normalizeImagePart(part); recognized {
 		return image
@@ -134,7 +136,7 @@ func normalizeToolOutputPart(rawPart any) any {
 		fileData := stringValue(file["file_data"])
 		fileURL := stringValue(file["file_url"])
 		if fileID == "" && fileData == "" && fileURL == "" {
-			return fallbackTextPart(rawPart)
+			return rawPart
 		}
 		out := map[string]any{"type": "input_file"}
 		if fileID != "" {
@@ -151,7 +153,9 @@ func normalizeToolOutputPart(rawPart any) any {
 		}
 		return out
 	default:
-		return fallbackTextPart(rawPart)
+		// A recognized image elsewhere in the same tool output must not make
+		// us reinterpret unrelated structured parts as text.
+		return rawPart
 	}
 }
 
@@ -197,17 +201,6 @@ func normalizeImagePart(part map[string]any) (map[string]any, bool) {
 		out["detail"] = detail
 	}
 	return out, true
-}
-
-func fallbackTextPart(value any) map[string]any {
-	raw, err := json.Marshal(value)
-	if err != nil {
-		raw = []byte(fmt.Sprint(value))
-	}
-	return map[string]any{
-		"type": "input_text",
-		"text": string(raw),
-	}
 }
 
 func matchesAny(value string, allowed []string) bool {

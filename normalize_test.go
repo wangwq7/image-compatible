@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -136,6 +137,38 @@ func TestApplyImageCompatibilityRepairsEveryToolOutput(t *testing.T) {
 		if got := parts[0].(map[string]any)["image_url"]; got != want {
 			t.Fatalf("output %d image URL = %#v, want %q", index, got, want)
 		}
+	}
+}
+
+func TestApplyImageCompatibilityPreservesUnrecognizedParts(t *testing.T) {
+	stringified := `[
+		{"type":"input_image","image_url":"data:image/png;base64,QUJD"},
+		{"type":"input_audio","audio":{"data":"QUJD","format":"wav"}},
+		{"type":"custom_payload","payload":{"nested":[7,true]}},
+		42
+	]`
+	body, err := json.Marshal(map[string]any{
+		"input": []any{map[string]any{
+			"type":    "function_call_output",
+			"call_id": "call-1",
+			"output":  stringified,
+		}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	out, modified := normalizeBody(t, body)
+	if !modified {
+		t.Fatal("expected request to be modified")
+	}
+	parts := decodedInput(t, out)[0].(map[string]any)["output"].([]any)
+	var want []any
+	if err := json.Unmarshal([]byte(stringified), &want); err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(parts, want) {
+		t.Fatalf("parts were not preserved: got %#v, want %#v", parts, want)
 	}
 }
 

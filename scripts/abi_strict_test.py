@@ -90,7 +90,7 @@ def load_plugin(path):
     metadata = registration["metadata"]
     if metadata["Name"] != "image-compatible":
         raise AssertionError(f"unexpected metadata: {metadata}")
-    if metadata["Version"] != "0.2.0":
+    if metadata["Version"] != "0.2.1":
         raise AssertionError(f"unexpected version: {metadata['Version']}")
     fields = [field["Name"] for field in metadata["ConfigFields"]]
     if fields != ["models", "source_formats", "target_formats"]:

@@ -45,7 +45,7 @@ import (
 const (
 	abiVersion              uint32 = 1
 	schemaVersion           uint32 = 1
-	pluginVersion                  = "0.2.0"
+	pluginVersion                  = "0.2.1"
 	methodPluginRegister           = "plugin.register"
 	methodPluginReconfigure        = "plugin.reconfigure"
 	methodRequestNormalize         = "request.normalize"

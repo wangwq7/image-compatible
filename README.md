@@ -32,7 +32,9 @@ becomes:
 ```
 
 Only the protocol structure changes. Image bytes, metadata, and part order are
-preserved.
+preserved. When a repaired tool output contains an unrecognized structured part,
+the plugin leaves that part unchanged; it never coerces it into text merely because
+an image appears alongside it.
 
 ## CPA configuration
 
